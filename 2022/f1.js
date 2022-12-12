@@ -2,11 +2,15 @@ import fs from "fs";
 
 function is_marker(chars) {
 	// console.log(new Set(chars).size, chars.length);
-	return new Set(chars).size == chars.length && chars.indexOf("_") == -1;
+	return (
+		new Set(chars).size == chars.length &&
+		chars.indexOf("_") == -1 &&
+		chars[0] !== undefined
+	);
 }
 
-const stack = ["_", "_", "_", "_"];
-const size = 4;
+const size = 14;
+const stack = Array(size);
 let pos = 1;
 
 fs.readFile("f1.txt", "utf8", (err, contents) => {
