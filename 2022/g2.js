@@ -28,12 +28,19 @@ fs.readFile("g1.txt", "utf8", (err, contents) => {
 			const [size, file] = l.split(" ");
 			if (size !== "dir") {
 				files.push(`${pwd}${file} ${size}`);
+				// console.log(pwd, file, size);
 			}
 		}
 	}
 	// console.log(files);
 	dirs = [...new Set(dirs)];
 	// console.log(dirs);
+
+	const total = 70000000;
+	const need = 30000000;
+	let current = false;
+	let smallest = 100000000000000;
+	let free = 0;
 
 	var sum = 0;
 	for (var d of dirs) {
@@ -42,8 +49,17 @@ fs.readFile("g1.txt", "utf8", (err, contents) => {
 			(sum, m) => sum + Number(m.split(" ")[1]),
 			0
 		);
-		console.log(d, size);
-		if (size <= 100000) sum += size;
+		if (!current) {
+			current = size;
+			free = total - size;
+		}
+		console.log(free + size, need, free + size > need);
+		if (free + size > need) {
+			if (size < smallest) {
+				smallest = size;
+				// console.log("", d, size, smallest, need - (total - current));
+			}
+		}
 	}
-	console.log(">>", sum);
+	console.log(">>", smallest);
 });
