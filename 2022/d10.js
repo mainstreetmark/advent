@@ -5,7 +5,7 @@ let X = 1;
 let cost = 0;
 let dx = 0;
 let sum = 0;
-fs.readFile("d10s.txt", "utf8", (err, contents) => {
+fs.readFile("d10.txt", "utf8", (err, contents) => {
 	const lines = contents.split("\n");
 	for (var l of lines) {
 		const [cmd, arg] = l.split(" ");
