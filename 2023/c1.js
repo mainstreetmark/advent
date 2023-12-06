@@ -7,6 +7,8 @@ function GetChar(x, y) {
 	return map[y].charAt(x);
 }
 
+const symbols = {};
+
 function NearSymbol(match, rows, cols) {
 	// if (match.match == "485") debugger;
 	const l = match.match.length;
@@ -24,7 +26,12 @@ function NearSymbol(match, rows, cols) {
 			// console.log(" ", X, Y, char);
 			out += char;
 			if (isNaN(char) && char !== ".") {
-				// console.log(`>${char}<`, match.match);
+				console.log(X, Y, `>${char}<`, match.match);
+				if (char == "*") {
+					const key = `${X},${Y}`;
+					if (!symbols[key]) symbols[key] = [];
+					symbols[key].push(Number(match.match));
+				}
 				return true;
 			}
 		}
@@ -34,7 +41,7 @@ function NearSymbol(match, rows, cols) {
 	return false;
 }
 
-fs.readFile("inputs/c1s.txt", "utf8", (err, contents) => {
+fs.readFile("inputs/c1.txt", "utf8", (err, contents) => {
 	const lines = contents.trim().split("\n");
 	let rows = lines.length;
 	let cols = 0;
@@ -79,8 +86,14 @@ fs.readFile("inputs/c1s.txt", "utf8", (err, contents) => {
 	for (var match of matches) {
 		if (NearSymbol(match, rows, cols)) {
 			// console.log(match);
-			sum += Number(match.match);
+			// sum += Number(match.match);
 		}
+	}
+	console.log(symbols);
+	var keys = Object.keys(symbols);
+	for (var key of keys) {
+		console.log(symbols[key]);
+		if (symbols[key].length == 2) sum += symbols[key][0] * symbols[key][1];
 	}
 	console.log(">>", sum);
 });
