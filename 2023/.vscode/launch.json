@@ -7,9 +7,9 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "B1",
+			"name": "AOC",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/b1.js"
+			"program": "${workspaceFolder}/c1.js"
 		}
 	]
 }
