@@ -17,16 +17,20 @@ function NearSymbol(match, rows, cols) {
 	// console.log(match, l, "\t", x1, x2, y1, y2);
 	const string = map.join("");
 	// console.log(string);
-	for (var Y = y1; Y < y2; Y++) {
+	let out = "";
+	for (var Y = y1; Y <= y2; Y++) {
 		for (var X = x1; X < x2; X++) {
 			const char = string.charAt(Y * cols + X);
-			console.log(" ", X, Y, char);
+			// console.log(" ", X, Y, char);
+			out += char;
 			if (isNaN(char) && char !== ".") {
 				// console.log(`>${char}<`, match.match);
 				return true;
 			}
 		}
+		out += "\n";
 	}
+	// console.log(out);
 	return false;
 }
 
