@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "AOC",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/d1.js"
+			"program": "${workspaceFolder}/d1a.js"
 		}
 	]
 }
