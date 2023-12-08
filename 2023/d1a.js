@@ -21,7 +21,7 @@ fs.readFile("inputs/d1.txt", "utf8", (err, contents) => {
 		lotto = lotto.trim().split(/\s+/g);
 		mine = mine.trim().split(/\s+/g);
 		const matches = HasMatch(lotto, mine);
-		console.log(count, card, ":", matches, lines.length);
+		// console.log(count, card, ":", matches, lines.length);
 		const cardno = parseInt(card.match(/\d+/)[0]);
 		// console.log(cardno);
 		for (var i = cardno; i < cardno + matches; i++) {
