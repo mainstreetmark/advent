@@ -1,28 +1,28 @@
 import fs from "fs";
+const args = process.argv;
 
 const MAP = {};
 let KEYS = [];
 let SEEDS = [];
-const CACHE = {};
 function Lookup(num, key) {
 	const map = MAP[key];
 	let out = num;
-	for (var m of map) {
-		const [dest, source, length] = m;
+	for (var i = 0; i < map.length; i++) {
+		const [dest, source, length] = map[i];
 		if (num >= source && num < source + length) {
-			out = dest + (num - source);
+			// console.log(map[i]);
+			out = dest - source + Number(num);
+			// console.log(" >", num, ":", dest, source, length, "=", out);
 			break;
 		}
 	}
 	const next = KEYS[KEYS.indexOf(key) + 1];
-	// console.log(next);
-	// console.log(key, out);
-	if (next) out = Lookup(out, next);
-	// CACHE[`${key}.${num}`] = out;
+	if (next) return Lookup(out, next);
+
 	return out;
 }
 
-fs.readFile("inputs/e1s.txt", "utf8", (err, contents) => {
+fs.readFile(args[2], "utf8", (err, contents) => {
 	const lines = contents.trim().split("\n");
 	let key = "";
 	for (var l of lines) {
@@ -72,71 +72,46 @@ fs.readFile("inputs/e1s.txt", "utf8", (err, contents) => {
 	const out = [];
 	let start = false;
 
-	const TOTAL = 2549759327;
-	let count = 0;
-
-	// let ranges = [];
-	// for (var seed of SEEDS) {
-	// 	if (!start) start = seed;
-	// 	else {
-	// 		ranges.push([start, Number(seed) + Number(start)]);
-	// 		start = false;
-	// 	}
-	// }
-	// console.log(ranges);
-
-	// for (var i = 0; i < ranges.length; i++) {
-	// 	for (var j = i + 1; j < ranges.length; j++) {
-	// 		if (ranges[i][0] >= ranges[j][0] && ranges[i][0] <= ranges[j][1]) {
-	// 			console.log("overlap start", ranges[i], ranges[j]);
-	// 		}
-	// 		if (ranges[i][1] >= ranges[j][0] && ranges[i][1] <= ranges[j][1]) {
-	// 			console.log("overlap stop", ranges[i], ranges[j]);
-	// 		}
-	// 		if (ranges[i][0] > ranges[j][0] && ranges[i][1] < ranges[j][1]) {
-	// 			console.log("overlap inside", ranges[i], ranges[j]);
-	// 		}
-	// 		if (ranges[i][0] < ranges[j][0] && ranges[i][1] > ranges[j][1]) {
-	// 			console.log("overlap outside", ranges[i], ranges[j]);
-	// 		}
-	// 	}
-	// }
+	const TOTAL = 2549759327n;
+	let count = 0n;
 
 	// return;
-	const time = Date.now();
+	const time = BigInt(Date.now());
+	let MIN = Infinity;
 	for (var seed of SEEDS) {
 		// console.log(seed);
-		if (!start) start = seed;
+		if (!start) start = BigInt(seed);
 		else {
-			let stop = Number(seed) + Number(start);
+			let stop = BigInt(seed) + BigInt(start);
 			console.log(start, "...", stop);
 			for (var i = start; i < stop; i++) {
 				count++;
-				const elapsed = Date.now() - time;
-				if (count % 1000000 === 0)
+				const elapsed = BigInt(Date.now()) - time;
+				if (count % 10000000n === 0n)
 					console.log(
 						count,
 						count / TOTAL,
-						Object.keys(CACHE).length,
 						"\ttime",
 						elapsed,
 						new Date(
-							time + elapsed / (count / TOTAL)
+							Number(time) +
+								Number(elapsed) /
+									(Number(count) / Number(TOTAL))
 						).toLocaleString(),
 						"\trate",
 						count / elapsed
 					);
-				let lookup = 0;
-				if (CACHE[`${key}.${i}`]) lookup = CACHE[`seed-to-soil.${i}`];
-				else lookup = Lookup(i, "seed-to-soil");
+				let lookup = Lookup(i, "seed-to-soil");
 				// CACHE[`seed-to-soil.${i}`] = lookup;
-
-				out.push(lookup);
+				// console.log("  >", i, lookup);
+				// out.push(lookup);
+				if (lookup < MIN) MIN = lookup;
 			}
 			start = false;
 		}
+		console.log("next");
 		// out.push(Lookup(seed, "seed-to-soil"));
 	}
 	// console.log(out);
-	console.log(">>", Math.min(...out));
+	console.log(">>", MIN);
 });

@@ -6,10 +6,21 @@
 	"configurations": [
 		{
 			"type": "node",
+			"restart": false,
 			"request": "launch",
-			"name": "AOC",
+			"name": "AOC Sample",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/e1.js"
+			"program": "${workspaceFolder}/e1.js",
+			"args": ["inputs/e1s.txt"]
+		},
+		{
+			"type": "node",
+			"restart": false,
+			"request": "launch",
+			"name": "AOC Real",
+			"skipFiles": ["<node_internals>/**"],
+			"program": "${workspaceFolder}/e1.js",
+			"args": ["inputs/e1.txt"]
 		}
 	]
 }
