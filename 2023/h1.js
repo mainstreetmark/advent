@@ -14,15 +14,30 @@ fs.readFile(process.argv[2], "utf8", (err, contents) => {
 			MAP[id] = { L: left, R: right };
 		}
 	}
-	console.log(dirs, MAP);
+	const dirlength = dirs.length;
+	const starts = Object.keys(MAP).filter((k) => k[2] == "A");
+	console.log(starts);
 
-	let key = "AAA";
+	const keys = starts.map((k) => ({ key: k }));
 	let step = 0;
-	while (key !== "ZZZ") {
-		const index = step % dirs.length;
-		key = MAP[key][dirs[index]];
-		console.log(key);
+	let begin = Date.now();
+	let loop = true;
+	const len = keys.length;
+	while (loop) {
+		// console.log(keys.filter((k) => k.key[2] == "Z").length);
+		const index = step % dirlength;
+		loop = false;
+		for (var i = 0; i < len; i++) {
+			const k = keys[i];
+			k.key = MAP[k.key][dirs[index]];
+			loop = loop || k.key[2] !== "Z";
+		}
 		step++;
+		// console.log("step", step, loop);
+		if (step % 100000000 == 0) {
+			console.log(step.toLocaleString(), Date.now() - begin);
+			begin = Date.now();
+		}
 	}
 	console.log(">>", step);
 });
