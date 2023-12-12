@@ -6,12 +6,12 @@
 	"configurations": [
 		{
 			"type": "node",
-			"restart": false,
+			"restart": true,
 			"request": "launch",
 			"name": "AOC Sample",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/f1.js",
-			"args": ["inputs/f1s.txt"]
+			"program": "${workspaceFolder}/g1.js",
+			"args": ["inputs/g1s.txt"]
 		},
 		{
 			"type": "node",
@@ -19,8 +19,8 @@
 			"request": "launch",
 			"name": "AOC Real",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/f1.js",
-			"args": ["inputs/f1.txt"]
+			"program": "${workspaceFolder}/g1.js",
+			"args": ["inputs/g1.txt"]
 		}
 	]
 }
