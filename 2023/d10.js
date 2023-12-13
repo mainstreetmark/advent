@@ -23,25 +23,71 @@ fs.readFile(process.argv[2], "utf8", (err, contents) => {
 	}
 
 	Go();
+
+	CountInside();
 	// Loop(x + 1, y);
 	debugger;
 });
 
-function Go() {
-	console.log(MAP);
+function CountInside() {
+	let count = 0;
+	for (var r = 0; r < MAP.length; r++) {
+		// console.log(MAP[r].map((s) => s.symbol).join(""));
+		let row = "";
+		let inside = false;
+		let inpipe = false;
+		let corner = "";
+		for (var c = 0; c < MAP[r].length; c++) {
+			let map = MAP[r][c];
+			let tile = ".";
+			if (map.seen) {
+				tile = "#";
+			}
+			if (map.seen && map.symbol == "|") {
+				inpipe = true;
+			}
+			if (map.seen && "LJ7FS".includes(map.symbol)) {
+				if (corner == "") {
+					inpipe = true;
+					corner = map.symbol;
+				} else {
+					if (corner == "F" && map.symbol == "J") {
+						inside = !inside;
+					}
+					if (corner == "L" && map.symbol == "7") {
+						inside = !inside;
+					}
+					inpipe = false;
+					corner = "";
+				}
+			} else if (inside) {
+				if (map.symbol == ".") {
+					inpipe = false;
+					inside = !inside;
+				}
+				count++;
+				tile = "I";
+			}
+			row += tile;
+		}
+		console.log(r, row);
+	}
+	console.log(">>", count);
+}
 
+function Go() {
 	let { c, r } = FindStart();
-	console.log(r, c, MAP[r][c]);
+	MAP[r][c].symbol = StartSym(r, c);
 	let at = FindFirst(r, c);
 	// console.log("f", at);
 	let num = 1;
 	while ((at = Loop(at, 1))) {
 		num++;
-		console.log(at.symbol);
+		// console.log(at.symbol);
 	}
 
 	// const num = Loop(first, 1);
-	console.log(">>", (num + 1) / 2);
+	// console.log(">>", (num + 1) / 2);
 }
 
 function Loop(at, dist) {
@@ -52,6 +98,17 @@ function Loop(at, dist) {
 	if (to) return MAP[to.r][to.c];
 	return false;
 }
+
+function StartSym(r, c) {
+	let dirs = "";
+	if ("7J-".includes(MAP[r][c + 1]?.symbol)) dirs += "R";
+	if ("FL-".includes(MAP[r][c - 1]?.symbol)) dirs += "L";
+	if (r > 0) if ("F7|".includes(MAP[r - 1][c]?.symbol)) dirs += "U";
+	if ("LJ|".includes(MAP[r + 1][c]?.symbol)) dirs += "D";
+	const map = { RD: "F", RU: "L", LD: "7", LU: "J" };
+	return map[dirs];
+}
+
 function FindFirst(r, c) {
 	if ("L-F".includes(MAP[r][c - 1]?.symbol)) return MAP[r][c - 1];
 	if ("J-7".includes(MAP[r][c + 1]?.symbol)) return MAP[r][c + 1];
@@ -65,7 +122,6 @@ function FindStart() {
 			if (MAP[r][c].symbol === "S") {
 				MAP[r][c].seen = true;
 				const at = { c: c, r: r };
-
 				return at;
 			}
 		}
