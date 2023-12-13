@@ -10,8 +10,8 @@
 			"request": "launch",
 			"name": "AOC Sample",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/i1.js",
-			"args": ["inputs/i1s.txt"]
+			"program": "${workspaceFolder}/d10.js",
+			"args": ["inputs/d10s.txt"]
 		},
 		{
 			"type": "node",
@@ -19,8 +19,8 @@
 			"request": "launch",
 			"name": "AOC Real",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/i1.js",
-			"args": ["inputs/i1.txt"]
+			"program": "${workspaceFolder}/d10.js",
+			"args": ["inputs/d10.txt"]
 		}
 	]
 }
