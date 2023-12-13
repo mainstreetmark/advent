@@ -39,38 +39,34 @@ function CountInside() {
 		let corner = "";
 		for (var c = 0; c < MAP[r].length; c++) {
 			let map = MAP[r][c];
+			let symbol = map.symbol;
 			let tile = ".";
 			if (map.seen) {
-				tile = "#";
+				tile = inside ? "#" : "#"; //symbol;
 			}
-			if (map.seen && map.symbol == "|") {
-				inpipe = true;
-			}
-			if (map.seen && "LJ7FS".includes(map.symbol)) {
-				if (corner == "") {
-					inpipe = true;
-					corner = map.symbol;
-				} else {
-					if (corner == "F" && map.symbol == "J") {
-						inside = !inside;
-					}
-					if (corner == "L" && map.symbol == "7") {
-						inside = !inside;
-					}
-					inpipe = false;
-					corner = "";
+
+			if (map.seen && symbol === "|") {
+				if (!MAP[r][c + 1]?.seen) inside = !inside;
+			} else if (map.seen && symbol === "-") {
+				//
+			} else if (map.seen && "F7LJ".includes(symbol)) {
+				// tile = "+";
+				if (symbol == "J" && corner == "F") {
+					symbol = "";
+					if (!MAP[r][c + 1]?.seen) inside = !inside;
 				}
+				if (symbol == "L" && corner == "7") {
+					symbol = "";
+					if (!MAP[r][c + 1]?.seen) inside = !inside;
+				}
+				corner = symbol;
 			} else if (inside) {
-				if (map.symbol == ".") {
-					inpipe = false;
-					inside = !inside;
-				}
+				// tile = "I";
 				count++;
-				tile = "I";
 			}
 			row += tile;
 		}
-		console.log(r, row);
+		console.log(r + 1, row);
 	}
 	console.log(">>", count);
 }
