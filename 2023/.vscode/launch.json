@@ -8,6 +8,7 @@
 			"type": "node",
 			"restart": true,
 			"request": "launch",
+			// "console": "integratedTerminal",
 			"name": "AOC Sample",
 			"skipFiles": ["<node_internals>/**"],
 			"program": "${workspaceFolder}/d11.js",
