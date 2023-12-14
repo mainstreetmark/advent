@@ -29,7 +29,27 @@ fs.readFile(process.argv[2], "utf8", (err, contents) => {
 	debugger;
 });
 
+function Reduce(row) {
+	// console.log(row.map((s) => s.symbol).join(""));
+	let line = "";
+	for (var c of row) {
+		if (c.seen) {
+			line += c.symbol;
+		} else {
+			line += ".";
+		}
+	}
+	return line
+		.replaceAll(/F-*J/g, "|")
+		.replaceAll(/L-*7/g, "|")
+		.replaceAll(/F-*7/g, "")
+		.replaceAll(/L-*J/g, "");
+}
+
 function CountInside() {
+	// console.log(Reduce(MAP[2]));
+	// debugger;
+
 	let count = 0;
 	for (var r = 0; r < MAP.length; r++) {
 		// console.log(MAP[r].map((s) => s.symbol).join(""));
@@ -37,36 +57,28 @@ function CountInside() {
 		let inside = false;
 		let inpipe = false;
 		let corner = "";
-		for (var c = 0; c < MAP[r].length; c++) {
-			let map = MAP[r][c];
-			let symbol = map.symbol;
-			let tile = ".";
-			if (map.seen) {
-				tile = inside ? "#" : "#"; //symbol;
+		const newrow = Reduce(MAP[r]);
+		// console.log(r + 1, MAP[r].map((s) => (s.seen ? "#" : ".")).join(""));
+		console.log(r + 1, newrow);
+		for (var c = 0; c < newrow.length; c++) {
+			// console.log(newrow[c]);
+			if (newrow[c] == "|") {
+				inside = !inside;
 			}
+			if (newrow[c] == ".") {
+				// console.log(inside);
+				if (inside) count++;
+			}
+			// let map = MAP[r][c];
+			// let symbol = map.symbol;
+			// let tile = ".";
+			// if (map.seen) {
+			// 	tile = inside ? "#" : "#"; //symbol;
+			// }
 
-			if (map.seen && symbol === "|") {
-				if (!MAP[r][c + 1]?.seen) inside = !inside;
-			} else if (map.seen && symbol === "-") {
-				//
-			} else if (map.seen && "F7LJ".includes(symbol)) {
-				// tile = "+";
-				if (symbol == "J" && corner == "F") {
-					symbol = "";
-					if (!MAP[r][c + 1]?.seen) inside = !inside;
-				}
-				if (symbol == "L" && corner == "7") {
-					symbol = "";
-					if (!MAP[r][c + 1]?.seen) inside = !inside;
-				}
-				corner = symbol;
-			} else if (inside) {
-				// tile = "I";
-				count++;
-			}
-			row += tile;
+			// row += tile;
 		}
-		console.log(r + 1, row);
+		// console.log(r + 1, row);
 	}
 	console.log(">>", count);
 }
