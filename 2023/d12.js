@@ -1,47 +1,75 @@
 import fs from "fs";
 
 const SPR = [];
-
+const REP = 1;
+let CACHE = {};
 let COUNT = 0;
 fs.readFile(process.argv[2], "utf8", (err, contents) => {
+	let count = 0;
 	const lines = contents.trim().split("\n");
 	for (var l of lines) {
 		if (l) {
-			console.log(l);
-			const [spring, pos] = l.split(" ");
-			SPR.push({ spring, pos: pos.split(",").map(Number) });
-
-			GetCombo(spring, pos.split(",").map(Number));
-			console.log(">>", COUNT);
+			CACHE = {};
+			let [spring, pos] = l.split(" ");
+			spring = (spring + "?").repeat(REP).slice(0, -1);
+			pos = (pos + ",")
+				.repeat(REP)
+				.split(",")
+				.map(Number)
+				.filter((s) => s > 0);
+			console.log(spring, pos);
+			count += GetCombo(spring, pos);
+			console.log("   >", count);
+			break;
 		}
 	}
+	console.log(">>", count);
+	// console.log("count: ", COUNT);
 	// console.log(SPR);
 	debugger;
 });
-function GetCombo(row, groups, spring = "") {
-	// console.log(">", row, spring);
-	if (row.length > 0) {
-		let c = 0;
-		if (row[c] == "?") {
-			GetCombo(row.slice(c + 1), groups, spring + "#");
-			GetCombo(row.slice(c + 1), groups, spring + ".");
-		} else {
-			GetCombo(row.slice(c + 1), groups, spring + row[c]);
+
+function GetCombo(spring, groups) {
+	// console.log(spring);
+	const size = groups[0];
+	spring = spring.replace(/^\.+/g, "");
+	const part = spring.slice(0, size);
+	// console.log(size, part);
+	if (part.includes("?")) {
+		const parts = Explode(part);
+		console.log(part, ">", parts);
+		let sum = 0;
+		for (var p of parts) {
+			sum += GetCombo(p + spring.slice(size), groups);
 		}
+		return sum;
+	} else if (part == "#".repeat(size)) {
+		if (groups.length == 1) {
+			return 1;
+		}
+		return GetCombo(spring.slice(size), groups.slice(1));
 	} else {
-		// console.log(spring.length, spring);
-		if (Validate(spring, groups)) COUNT++;
+		if (groups.length == 1) {
+			return 0;
+		}
 	}
+	return 0;
 }
 
-function Validate(row, groups) {
-	var springs = row.split(/\.+/g).filter((s) => s.length > 0);
-	// console.log(springs);
-	if (groups.length == springs.length) {
-		for (var i = 0; i < groups.length; i++) {
-			if (groups[i] !== springs[i].length) return false;
-		}
-		return true;
+function Explode(part) {
+	const parts = part.split("?");
+	if (parts.length > 1) {
+		const next = Explode(parts.slice(1).join("?"));
+		const hash = next.map((n) => parts[0] + "#" + n);
+		const dot = next.map((n) => parts[0] + "." + n);
+
+		// console.log(part, parts);
+		let out = [...hash, ...dot];
+		return out;
 	}
-	return false;
+	return [part];
+}
+
+function Do(parts) {
+	let A = "." + parts;
 }
