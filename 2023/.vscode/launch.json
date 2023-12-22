@@ -11,8 +11,8 @@
 			// "console": "integratedTerminal",
 			"name": "AOC Sample",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/d14.js",
-			"args": ["inputs/d14s.txt"]
+			"program": "${workspaceFolder}/d15.js",
+			"args": ["inputs/d15s.txt"]
 		},
 		{
 			"type": "node",
@@ -20,8 +20,8 @@
 			"request": "launch",
 			"name": "AOC Real",
 			"skipFiles": ["<node_internals>/**"],
-			"program": "${workspaceFolder}/d14.js",
-			"args": ["inputs/d14.txt"]
+			"program": "${workspaceFolder}/d15.js",
+			"args": ["inputs/d15.txt"]
 		}
 	]
 }
