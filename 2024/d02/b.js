@@ -26,21 +26,23 @@ function check_safe(report, dir = null) {
 		}
 		let diff = report[i] - report[i - 1];
 		if (diff < dir[0] || diff > dir[1]) {
-			if (passes == 0) return 0;
-			if (typeof report[i + 1] == "undefined") return 0;
-			diff = report[i + 1] - report[i - 1];
-			if (diff < dir[0] || diff > dir[1]) {
-				return 0;
-			}
-			i++;
-			passes--;
+			// console.log("diff", diff, report[i - 1], report[i]);
+			if (passes > 0) {
+				diff = report[i + 1] - report[i - 1];
+				if (isNaN(report[i + 1])) return 1;
+				if (isNaN(diff)) debugger;
+				// console.log("diff retrt", diff, report[i - 1], report[i + 1]);
+				if (diff < dir[0] || diff > dir[1]) return 0;
+				report = remove_index(report, i);
+				passes--;
+			} else return 0;
 		}
 	}
 	return 1;
 }
 
 const __dirname = fileURLToPath(dirname(import.meta.url));
-var datafile = __dirname + "/d02t.txt";
+var datafile = __dirname + "/d02.txt";
 console.log("\n---\n", datafile);
 fs.readFile(datafile, "utf8", (err, contents) => {
 	const lines = contents.split("\n");
@@ -50,7 +52,8 @@ fs.readFile(datafile, "utf8", (err, contents) => {
 	let good = 0;
 	for (var report of split_lines) {
 		var result = check_safe(report);
-		console.log("result", report.join(","), result ? "Safe" : "Unsafe");
+		if (!result)
+			console.log("result", report.join(","), result ? "Safe" : "Unsafe");
 		good += result;
 	}
 	console.log(">>", good);
