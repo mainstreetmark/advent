@@ -12,3 +12,8 @@ export function transpose_array(arr) {
 	// transpose array
 	return arr[0].map((_, i) => arr.map((row) => row[i]));
 }
+
+export function remove_index(arr, index) {
+	// remove index from array
+	return arr.filter((_, i) => i !== index);
+}
