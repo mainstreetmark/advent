@@ -1,8 +1,8 @@
 import fs from "fs";
 
-import { split_string, transpose_array } from "./functions.js";
+import { split_string, transpose_array } from "../functions.js";
 
-fs.readFile("inputs/d01a.txt", "utf8", (err, contents) => {
+fs.readFile("d01.txt", "utf8", (err, contents) => {
 	const lines = contents.split("\n");
 	const split_lines = lines
 		.map((line) => split_string(line, true))
