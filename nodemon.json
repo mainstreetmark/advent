@@ -1,3 +1,4 @@
 {
-	"ext": "js,txt"
+	"ext": "js,txt",
+	"watch": [".."]
 }
