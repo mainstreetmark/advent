@@ -82,7 +82,9 @@ export default class Map {
 		if (r >= 0 && r < this.height && c >= 0 && c < this.width) {
 			// console.log("\tSet>", r, c, char);
 			this.data[r][c] = char;
+			return true;
 		}
+		return false;
 	}
 	get([r, c]) {
 		return this.data[c][r];
