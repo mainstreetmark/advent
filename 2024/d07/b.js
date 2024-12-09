@@ -47,6 +47,7 @@ function Go(contents) {
 	let total = 0;
 	const lines = contents.split("\n");
 	var count = 0;
+	let eqcount = 0;
 	for (var l of lines) {
 		if (l) {
 			var [sum, ...nums] = l.replace(":", "").split(" ").map(Number);
@@ -56,6 +57,7 @@ function Go(contents) {
 			GetEqs(sum, nums);
 			// console.log(" = ", EQS);
 			for (var eq of EQS) {
+				eqcount++;
 				// console.log(eq, eval(eq), "=", sum);
 				if (eval(eq) == sum) {
 					console.log("valid", eq, sum);
@@ -65,6 +67,7 @@ function Go(contents) {
 			}
 		}
 	}
+	console.log(">>", total, eqcount);
 	console.log(">>", total);
 	///here
 }
