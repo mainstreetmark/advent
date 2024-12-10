@@ -2,10 +2,17 @@ import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
-console.log(">>>>Map.class.js");
 export default class Map {
 	width;
 	height;
+	// North, East, South, West
+	static NEWS = [
+		[-1, 0],
+		[0, 1],
+		[1, 0],
+		[0, -1],
+	];
+
 	constructor(filename) {
 		const __dirname = fileURLToPath(dirname(import.meta.url));
 		var datafile = __dirname + "/" + filename;
@@ -16,11 +23,7 @@ export default class Map {
 			.split("\n")
 			.map((line) => line.split(""))
 			.filter((l) => l.length);
-		this.original = fs
-			.readFileSync(datafile, "utf8")
-			.split("\n")
-			.map((line) => line.split(""))
-			.filter((l) => l.length);
+		this.original = this.copy(this.data);
 		this.width = this.data[0].length;
 		this.height = this.data.length;
 		console.log(`${filename} loaded.`, this.width, this.height);
@@ -34,6 +37,14 @@ export default class Map {
 			);
 
 		console.log(this.data.map((row) => row.join("")).join("\n"));
+	}
+
+	reset() {
+		this.data = this.copy(this.original);
+	}
+
+	copy(data) {
+		return JSON.parse(JSON.stringify(data));
 	}
 
 	// Idenitify unique chars
@@ -78,6 +89,7 @@ export default class Map {
 		return out;
 	}
 
+	// Set a value at a given coordinate
 	set([r, c], char) {
 		if (r >= 0 && r < this.height && c >= 0 && c < this.width) {
 			// console.log("\tSet>", r, c, char);
@@ -86,7 +98,16 @@ export default class Map {
 		}
 		return false;
 	}
+	// Get a value at a given coordinate
 	get([r, c]) {
-		return this.data[c][r];
+		if (r >= 0 && r < this.height && c >= 0 && c < this.width) {
+			return this.data[r][c];
+		}
+		return null;
+	}
+
+	// Return a spot offset by the given delta
+	Move(spot, delta) {
+		return [spot[0] + delta[0], spot[1] + delta[1]];
 	}
 }
