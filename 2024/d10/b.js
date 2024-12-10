@@ -17,7 +17,6 @@ function GetScore(start) {
 			if (target == 9) {
 				// console.log("-".repeat(el), el2, start, spot);
 				score += 1;
-				map.set(spot, "X");
 			} else score += GetScore(spot);
 		}
 	}
