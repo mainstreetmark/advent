@@ -110,4 +110,8 @@ export default class Map {
 	Move(spot, delta) {
 		return [spot[0] + delta[0], spot[1] + delta[1]];
 	}
+	// Return character at a spot, with this delta
+	Look(spot, delta) {
+		return this.get(this.Move(spot, delta));
+	}
 }
