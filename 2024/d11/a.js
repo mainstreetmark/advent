@@ -1,5 +1,5 @@
-var input = "872027 227 18 9760 0 4 67716 9245696";
-const MAX = 75;
+var input = "125";
+const MAX = 6;
 
 import { bar } from "../functions.js";
 
@@ -8,7 +8,7 @@ let line = input;
 for (var i = 0; i < MAX; i++) {
 	let stones = line.split(" ");
 	let out = [];
-	bar(i, MAX);
+	// bar(i, MAX);
 	while (stones.length > 0) {
 		var stone = stones.shift();
 		if (stone == "0") {
@@ -24,6 +24,6 @@ for (var i = 0; i < MAX; i++) {
 		}
 	}
 	line = out.join(" ");
-	// console.log(line);
+	console.log(line);
 }
 console.log(">>", line.split(" ").length);
