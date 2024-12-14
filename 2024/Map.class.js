@@ -13,7 +13,7 @@ export default class Map {
 		[0, -1],
 	];
 
-	constructor(arg1, arg2) {
+	constructor(arg1, arg2 = false, arg3 = ".") {
 		if (typeof arg1 === "string") {
 			const filename = arg1;
 			const __dirname = fileURLToPath(dirname(import.meta.url));
@@ -35,7 +35,7 @@ export default class Map {
 			// this.data = Array(this.height).fill(Array(this.width).fill("."));
 			this.data = Array(this.height)
 				.fill()
-				.map(() => Array(this.width).fill("."));
+				.map(() => Array(this.width).fill(arg3));
 
 			this.original = this.copy(this.data);
 		}

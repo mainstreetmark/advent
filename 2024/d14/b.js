@@ -2,6 +2,8 @@ import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
+console.clear();
+
 const test = {
 	filename: "d14t.txt",
 	width: 11,
@@ -28,7 +30,7 @@ fs.readFile(datafile, "utf8", (err, contents) => {
 
 import Map from "../Map.class.js";
 
-const map = new Map(W, H);
+const map = new Map(W, H, " ");
 
 map.print("Original");
 
@@ -50,7 +52,10 @@ function Go(contents) {
 	}
 	// console.log(bots);
 	let counts = [];
-	for (var i = 0; i < 100; i++) {
+	for (var i = 0; i < 6644; i++) {
+		if (i == 6643) debugger;
+		// console.clear();
+		// console.log("loop", i);
 		Loop();
 
 		counts = Array(W)
@@ -61,10 +66,35 @@ function Go(contents) {
 			counts[b.p[0]][b.p[1]]++;
 			map.set([b.p[1], b.p[0]], counts[b.p[0]][b.p[1]]);
 		}
-		map.print(`After ${i + 1}`);
+		if (Test(counts)) {
+			// console.clear();
+			map.print(`After ${i + 1}`);
+		}
 	}
-	map.print("After");
+	// map.print("After ALl");
 	console.log(">>", GetCounts(counts));
+}
+
+function Test(counts) {
+	var c1 = counts[45].reduce((a, b) => a + b, 0);
+	var c2 = counts[29].reduce((a, b) => a + b, 0);
+	var c3 = counts[44].reduce((a, b) => a + b, 0);
+	var c4 = counts[46].reduce((a, b) => a + b, 0);
+	var c5 = counts[30].reduce((a, b) => a + b, 0);
+	var c6 = counts[60].reduce((a, b) => a + b, 0);
+	console.log(c1, c2, c3, c4, c5, c6);
+	// console.log(c1, c2);
+	return c1 == 27 && c2 == 3 && c3 == 26 && c4 == 25 && c5 == 36 && c6 == 35;
+}
+
+function CountArea(counts, [r, c], [w, h]) {
+	let count = 0;
+	for (var i = 0; i < w; i++) {
+		for (var j = 0; j < h; j++) {
+			count += counts[r + i][c + j];
+		}
+	}
+	return count;
 }
 
 function Loop() {
@@ -89,7 +119,7 @@ function GetCounts(counts) {
 		[0, cols - dc],
 		[rows - dr, cols - dc],
 	];
-	console.log(rows, cols, dr, dc, quads);
+	// console.log(rows, cols, dr, dc, quads);
 	for (var q of quads) {
 		var count = 0;
 		for (var r = q[0]; r < q[0] + dr; r++) {
@@ -99,7 +129,7 @@ function GetCounts(counts) {
 			}
 		}
 		total *= count;
-		console.log(q, count);
+		// console.log(q, count);
 	}
 	return total;
 }
