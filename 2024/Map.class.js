@@ -13,20 +13,32 @@ export default class Map {
 		[0, -1],
 	];
 
-	constructor(filename) {
-		const __dirname = fileURLToPath(dirname(import.meta.url));
-		var datafile = __dirname + "/" + filename;
-		console.log("\n---\n", datafile);
+	constructor(arg1, arg2) {
+		if (typeof arg1 === "string") {
+			const filename = arg1;
+			const __dirname = fileURLToPath(dirname(import.meta.url));
+			var datafile = __dirname + "/" + filename;
+			console.log("\n---\n", datafile);
 
-		this.data = fs
-			.readFileSync(datafile, "utf8")
-			.split("\n")
-			.map((line) => line.split(""))
-			.filter((l) => l.length);
-		this.original = this.copy(this.data);
-		this.width = this.data[0].length;
-		this.height = this.data.length;
-		console.log(`${filename} loaded.`, this.width, this.height);
+			this.data = fs
+				.readFileSync(datafile, "utf8")
+				.split("\n")
+				.map((line) => line.split(""))
+				.filter((l) => l.length);
+			this.original = this.copy(this.data);
+			this.width = this.data[0].length;
+			this.height = this.data.length;
+			console.log(`${filename} loaded.`, this.width, this.height);
+		} else {
+			this.width = arg1;
+			this.height = arg2;
+			// this.data = Array(this.height).fill(Array(this.width).fill("."));
+			this.data = Array(this.height)
+				.fill()
+				.map(() => Array(this.width).fill("."));
+
+			this.original = this.copy(this.data);
+		}
 	}
 
 	print(title = "") {
@@ -37,6 +49,7 @@ export default class Map {
 			);
 
 		console.log(this.data.map((row) => row.join("")).join("\n"));
+		console.log(" ");
 	}
 
 	reset() {
