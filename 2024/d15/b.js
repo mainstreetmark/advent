@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import Map from "../Map.class.js";
 
 const __dirname = fileURLToPath(dirname(import.meta.url));
-var datafile = __dirname + "/d15t.txt";
+var datafile = __dirname + "/d15.txt";
 console.log("\n---\n", datafile);
 fs.readFile(datafile, "utf8", (err, contents) => {
 	Go(contents);
@@ -72,11 +72,11 @@ function Start(map, path) {
 		if (Push(map, loc, DIR[p])) {
 			loc = map.Go(loc, DIR[p]);
 		}
-		map.print("Move " + p);
+		// map.print("Move " + p);
 	}
 	map.print("Final");
 
-	let boxes = map.findAll("O");
+	let boxes = map.findAll("[");
 	var sum = 0;
 	// console.log("boxes", boxes);
 	for (var b of boxes) {
@@ -90,28 +90,41 @@ function Push(map, loc, dir, test = false) {
 	// console.log(next);
 	switch (next) {
 		case ".":
-			map.Move(loc, map.Go(loc, dir), ".");
+			if (!test) map.Move(loc, map.Go(loc, dir), ".");
 			return true;
 		case "#":
 			return false;
 		case "[":
-			if (Push(map, map.add(loc, dir), dir)) {
-				map.Move(loc, map.Go(loc, dir), ".");
-				return true;
-			}
-			break;
 		case "]":
-			if (Push(map, map.add(loc, dir), dir)) {
-				map.Move(loc, map.Go(loc, dir), ".");
-				return true;
+			if (dir[0] == 0) {
+				if (Push(map, map.add(loc, dir), dir)) {
+					if (!test) map.Move(loc, map.Go(loc, dir), ".");
+					return true;
+				}
+			} else {
+				var stone =
+					next == "["
+						? [dir, map.add(dir, DIR[">"])]
+						: [map.add(dir, DIR["<"]), dir];
+				if (
+					Push(map, map.add(loc, stone[0]), dir, true) &&
+					Push(map, map.add(loc, stone[1]), dir, true)
+				) {
+					if (!test) {
+						Push(map, map.add(loc, stone[0]), dir) &&
+							Push(map, map.add(loc, stone[1]), dir);
+						map.Move(loc, map.Go(loc, dir), ".");
+					}
+					return true;
+				}
 			}
 			break;
-		case "O":
-			if (Push(map, map.add(loc, dir), dir)) {
-				map.Move(loc, map.Go(loc, dir), ".");
-				return true;
-			}
-			return false;
+		// case "O":
+		// 	if (Push(map, map.add(loc, dir), dir)) {
+		// 		map.Move(loc, map.Go(loc, dir), ".");
+		// 		return true;
+		// 	}
+		// 	return false;
 		case null:
 			return false;
 	}
