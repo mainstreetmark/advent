@@ -12,7 +12,7 @@ function GrowRegion(plant, loc) {
 	region.push(loc);
 	MAP.set(loc, ".");
 	for (var dir of Map.NEWS) {
-		var spot = MAP.Move(loc, dir);
+		var spot = MAP.Go(loc, dir);
 		var el = MAP.get(spot);
 		if (el == plant) {
 			region.push(...GrowRegion(plant, spot));

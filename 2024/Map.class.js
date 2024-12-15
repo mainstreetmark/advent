@@ -13,8 +13,23 @@ export default class Map {
 		[0, -1],
 	];
 
+	/**
+	 *
+	 * @param {String} arg1 Filename with a map
+	 * 		  (Int) arg1 Width
+	 * 		  (Array) Map, already read in as an array of lines
+	 * @param {*} arg2
+	 * @param {*} arg3
+	 */
 	constructor(arg1, arg2 = false, arg3 = ".") {
-		if (typeof arg1 === "string") {
+		if (Array.isArray(arg1)) {
+			this.data = arg1
+				.map((line) => line.split(""))
+				.filter((l) => l.length);
+			this.original = this.copy(this.data);
+			this.width = this.data[0].length;
+			this.height = this.data.length;
+		} else if (typeof arg1 === "string") {
 			const filename = arg1;
 			const __dirname = fileURLToPath(dirname(import.meta.url));
 			var datafile = __dirname + "/" + filename;
@@ -58,6 +73,9 @@ export default class Map {
 
 	copy(data) {
 		return JSON.parse(JSON.stringify(data));
+	}
+	add(coord1, coord2) {
+		return [coord1[0] + coord2[0], coord1[1] + coord2[1]];
 	}
 
 	// Idenitify unique chars
@@ -120,11 +138,16 @@ export default class Map {
 	}
 
 	// Return a spot offset by the given delta
-	Move(spot, delta) {
+	Go(spot, delta) {
 		return [spot[0] + delta[0], spot[1] + delta[1]];
 	}
 	// Return character at a spot, with this delta
-	Look(spot, delta) {
-		return this.get(this.Move(spot, delta));
+	Look(spot, delta, mul = 1) {
+		return this.get(this.Go(spot, [delta[0] * mul, delta[1] * mul]));
+	}
+	// Move an item on a map from..to
+	Move(from, to, empty = ".") {
+		this.set(to, this.get(from));
+		this.set(from, ".");
 	}
 }

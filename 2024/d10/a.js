@@ -11,7 +11,7 @@ function GetScore(start) {
 	const target = el + 1;
 	var score = 0;
 	for (var dir of Map.NEWS) {
-		var spot = map.Move(start, dir);
+		var spot = map.Go(start, dir);
 		var el2 = map.get(spot);
 		if (el2 == target) {
 			if (target == 9) {
