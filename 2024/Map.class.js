@@ -6,7 +6,7 @@ export default class Map {
 	width;
 	height;
 	// North, East, South, West
-	static NEWS = [
+	NEWS = [
 		[-1, 0],
 		[0, 1],
 		[1, 0],
