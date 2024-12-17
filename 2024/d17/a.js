@@ -49,6 +49,7 @@ function Go(contents) {
 	let pointer = 0;
 	opcode = program[pointer];
 	operand = program[pointer + 1];
+	let bits = "";
 	while (typeof opcode === "number") {
 		// console.log(">", op, Combo(op), arg);
 
@@ -73,6 +74,7 @@ function Go(contents) {
 				break;
 			case 5: // out;
 				output.push(Combo(operand) % 8);
+				debugger;
 				break;
 			case 6: // bdv
 				B = Math.trunc(A / Math.pow(2, Combo(operand)));
