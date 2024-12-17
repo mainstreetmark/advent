@@ -21,23 +21,25 @@ export function remove_index(arr, index) {
 let bar_time = false;
 
 let last = -1;
-export function bar(count, max) {
-	const WIDTH = 100;
+export function bar(count, max, width = 100) {
 	if (!bar_time) bar_time = Date.now();
 
 	const delta_time = Date.now() - bar_time;
 	const bar = "█"
-		.repeat(Math.floor((count / max) * WIDTH))
-		.padEnd(WIDTH, "-");
+		.repeat(Math.floor((count / max) * width))
+		.padEnd(width, "-");
+	const today = new Date().toLocaleDateString();
 	const eta = new Date(
 		Date.now() + Math.floor((delta_time / count) * (max - count))
-	).toLocaleTimeString();
-	if (last != Math.floor((count / max) * WIDTH)) {
+	)
+		.toLocaleString()
+		.replace(`${today}, `, "");
+	if (last != Math.floor((count / max) * width)) {
 		console.log(
 			`[${bar}] ${count}/${max} (${Math.floor(
 				(count / max) * 100
 			)}%) ETA: ${eta}`
 		);
-		last = Math.floor((count / max) * WIDTH);
+		last = Math.floor((count / max) * width);
 	}
 }
