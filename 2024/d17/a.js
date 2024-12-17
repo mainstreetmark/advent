@@ -77,7 +77,7 @@ function Go(contents) {
 			case 6: // bdv
 				B = Math.trunc(A / Math.pow(2, Combo(operand)));
 				break;
-			case 6: // bdv
+			case 7: // bdv
 				C = Math.trunc(A / Math.pow(2, Combo(operand)));
 				break;
 		}
