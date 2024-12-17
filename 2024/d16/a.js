@@ -2,64 +2,98 @@ import Map from "../Map.class.js";
 
 const MAP = new Map("d16/d16t.txt");
 
-MAP.print("Original");
+// MAP.print("Original");
 
 const DIRS = ["^", ">", "v", "<"];
+const CACHE = {};
 
 var START = MAP.find("S");
 var END = MAP.find("E");
 const DIR = ">";
 
-// console.log(START, END);
-let best = +Infinity;
+async function main() {
+	console.log(">>", await Step(START, [0, 1], 0));
+	// for (var c of Object.keys(CACHE)) {
+	// 	if (CACHE[c] < Infinity) {
+	// 		console.log(c, CACHE[c]);
+	// 	}
+	// }
 
-Step(START, DIR, 0);
-
-console.log(">>", best);
-
-// MAP.print("After");
-
-function Step(loc, dir, score) {
-	if (score > best) return false;
-	const valid = ".ES"; // valid spots
-	if (!valid.includes(MAP.get(loc))) return false;
-	// console.log(loc, dir, MAP.get(loc));
-
-	var N = MAP.NEWS[0];
-	var E = MAP.NEWS[1];
-	var S = MAP.NEWS[2];
-	var W = MAP.NEWS[3];
-	if (MAP.get(loc) == "E") {
-		if (score < best) {
-			best = score;
-			MAP.print("END " + score);
-		}
-		return true;
-	}
-	MAP.set(loc, "@");
-	MAP.set(loc, dir);
-	switch (dir) {
-		case ">":
-			Step(MAP.Go(loc, E), ">", score + 1);
-			Step(MAP.Go(loc, N), "^", score + 1001);
-			Step(MAP.Go(loc, S), "v", score + 1001);
-			break;
-		case "^":
-			Step(MAP.Go(loc, N), "^", score + 1);
-			Step(MAP.Go(loc, W), "<", score + 1001);
-			Step(MAP.Go(loc, E), ">", score + 1001);
-			break;
-		case "<":
-			Step(MAP.Go(loc, W), "<", score + 1);
-			Step(MAP.Go(loc, N), "^", score + 1001);
-			Step(MAP.Go(loc, S), "v", score + 1001);
-			break;
-		case "v":
-			Step(MAP.Go(loc, S), "v", score + 1);
-			Step(MAP.Go(loc, W), "<", score + 1001);
-			Step(MAP.Go(loc, E), ">", score + 1001);
-			break;
-	}
 	// MAP.print("After");
-	MAP.set(loc, ".");
+}
+
+main();
+
+async function Step(loc, dir, cost, depth = 0, total = 0) {
+	return new Promise(async (resolve) => {
+		// console.log(" ".repeat(depth) + "Step(", loc, dir, cost, depth, ")");
+		var key = `${loc[0]},${loc[1]},${dir}`;
+		if (CACHE[key]) {
+			// console.log("cache", key, CACHE[key]);
+			resolve(CACHE[key] + cost);
+			return;
+		} else {
+			const valid = ".,ES"; // valid spots
+			if (!valid.includes(MAP.get(loc))) {
+				resolve(false);
+				return;
+			} else {
+				const strings = {
+					"0,-1": "<",
+					"1,0": "v",
+					"0,1": ">",
+					"-1,0": "^",
+				};
+				// console.log(step, key);
+				// MAP.set(loc, "@");
+				// MAP.print("map" + dir);
+				// if (loc[0] == 11) {
+				// 	MAP.print();
+				// 	debugger;
+				// }
+				var dirstring = "^>v<";
+				var fwd = dirstring.indexOf(dir);
+				if (MAP.get(loc) == "E") {
+					// MAP.print("END " + total);
+					resolve(cost);
+					return;
+				} else {
+					MAP.set(loc, "@");
+					// MAP.print(key);
+					MAP.set(loc, strings[dir.join(",")]);
+					// MAP.print(key);
+					var dirs = [];
+					switch (dir.join(",")) {
+						case "1,0":
+						case "-1,0":
+							dirs = [dir, [0, -1], [0, 1]];
+							break;
+						case "0,-1":
+						case "0,1":
+							dirs = [dir, [-1, 0], [1, 0]];
+							break;
+					}
+					let nextcost = 1;
+					var prices = [];
+					for (var d of dirs) {
+						prices.push(
+							await Step(
+								MAP.Go(loc, d),
+								d,
+								nextcost,
+								depth + 1,
+								total + nextcost
+							)
+						);
+						nextcost = 1001;
+					}
+					// console.log(prices);
+					MAP.set(loc, ".");
+					CACHE[key] = Math.min(...prices.filter((p) => p !== false));
+					resolve(CACHE[key] + cost);
+					return;
+				}
+			}
+		}
+	});
 }
