@@ -2,6 +2,8 @@ import Map from "../Map.class.js";
 
 const MAP = new Map("d16/d16t.txt");
 
+// NOTES FROM THE FUTURE:https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+
 // MAP.print("Original");
 
 const DIRS = ["^", ">", "v", "<"];
