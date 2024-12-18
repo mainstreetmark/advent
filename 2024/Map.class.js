@@ -177,15 +177,11 @@ export default class Map {
 		for (var wall of walls) {
 			grid.set(wall, "value", 1);
 		}
-		console.log(walls.length);
+		// console.log(walls.length);
 
 		var astar = new Astar(grid);
 		var path = astar.search(from, to, { rightAngle: true });
-		path.forEach((p) => {
-			this.set(p, "O");
-		});
-		this.print("Path");
-
-		return path.slice(1);
+		if (path) return path.slice(1);
+		else return false;
 	}
 }
