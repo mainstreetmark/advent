@@ -38,10 +38,10 @@ function Combo(opcode) {
 const mod = (n, m) => ((n % m) + m) % m;
 
 // const START = 0;
-const START = 100000030336147;
-const MAX = Math.pow(10, 15);
+const START = 10240420301;
+const MAX = START + 1000000;
 
-let show_debug = true;
+let show_debug = false;
 
 function Debug(line) {
 	if (show_debug) {
@@ -66,7 +66,7 @@ function Go(contents) {
 
 	for (var attempt = START; attempt < MAX; attempt += step) {
 		// console.log("test", AA);
-		bar(attempt - START, MAX - START, 265);
+		// bar(attempt - START, MAX - START, 100);
 
 		A = attempt;
 		B = lines[1].split(" ")[2] | 0;
@@ -141,44 +141,6 @@ function Go(contents) {
 				opcode = program[pointer];
 				operand = program[pointer + 1];
 			}
-			// break;
-			// console.log(
-			// 	">>",
-			// 	attempt,
-			// 	output.join(","),
-			// 	output.length,
-			// 	program.length
-			// );
-
-			var newbig = Number(output.join(""));
-			// console.log(
-			// 	attempt,
-			// 	target_num,
-			// 	bignum - target_num,
-			// 	"\t",
-			// 	bignum / target_num,
-			// 	minperc
-			// );
-			var perc = bignum / target_num;
-			if (perc && perc < minperc) {
-				minperc = perc;
-				console.log(
-					"new min",
-					attempt,
-					minperc,
-					"\t",
-					output.join(",")
-				);
-			}
-			bignum = newbig;
-			// bignum = Number(output.join(""));
-			if (output.join(",") === target) {
-				console.log("found", attempt, target, "=", output.join(","));
-				console.log(">>", attempt);
-				break;
-			}
-			// step += 1;
-			show_debug = false;
 		}
 		// if (AA % 100000 === 0) {
 		// 	console.log("test>", AA);

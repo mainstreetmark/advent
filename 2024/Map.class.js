@@ -162,6 +162,7 @@ export default class Map {
 	}
 
 	// A* pathfinding implementation
+	//   https://www.npmjs.com/package/fast-astar
 	Path(from, to, obstacles = ["#"]) {
 		let grid = new Grid({
 			col: this.height, // col
@@ -176,11 +177,15 @@ export default class Map {
 		for (var wall of walls) {
 			grid.set(wall, "value", 1);
 		}
+		console.log(walls.length);
 
 		var astar = new Astar(grid);
-		var path = astar.search(from, to);
-		console.log(path);
+		var path = astar.search(from, to, { rightAngle: true });
+		path.forEach((p) => {
+			this.set(p, "O");
+		});
+		this.print("Path");
 
-		return path; // No path found
+		return path.slice(1);
 	}
 }
