@@ -2,6 +2,8 @@ import fs from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
+import { Grid, Astar } from "fast-astar";
+
 export default class Map {
 	width;
 	height;
@@ -107,13 +109,16 @@ export default class Map {
 		return out;
 	}
 
-	// Returns an array of coordinates of all occurrances of a char
-	findAll(char) {
+	// Returns an array of coordinates of all occurrances of a char (or array of chars);
+	findAll(chars) {
+		if (typeof chars == "string") chars = [chars];
 		const out = [];
-		for (let r = 0; r < this.height; r++) {
-			for (let c = 0; c < this.width; c++) {
-				if (this.data[r][c] === char) {
-					out.push([r, c]);
+		for (var char of chars) {
+			for (let r = 0; r < this.height; r++) {
+				for (let c = 0; c < this.width; c++) {
+					if (this.data[r][c] === char) {
+						out.push([r, c]);
+					}
 				}
 			}
 		}
@@ -149,5 +154,33 @@ export default class Map {
 	Move(from, to, empty = ".") {
 		this.set(to, this.get(from));
 		this.set(from, ".");
+	}
+
+	// Helper method to calculate Manhattan distance heuristic
+	manhattan(pos1, pos2) {
+		return Math.abs(pos1[0] - pos2[0]) + Math.abs(pos1[1] - pos2[1]);
+	}
+
+	// A* pathfinding implementation
+	Path(from, to, obstacles = ["#"]) {
+		let grid = new Grid({
+			col: this.height, // col
+			row: this.width, // row
+			render: function () {
+				// Optional, this method is triggered when the grid point changes
+				// console.log(this);
+			},
+		});
+
+		var walls = this.findAll(obstacles);
+		for (var wall of walls) {
+			grid.set(wall, "value", 1);
+		}
+
+		var astar = new Astar(grid);
+		var path = astar.search(from, to);
+		console.log(path);
+
+		return path; // No path found
 	}
 }
