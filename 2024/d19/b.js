@@ -12,13 +12,13 @@ fs.readFile(datafile, "utf8", (err, contents) => {
 });
 
 function Validate(design, patterns, depth = 0) {
+	var total = 0;
 	if (design == "") return 1;
 	if (design.length > 0 && patterns.length === 0) return 0;
 
 	const patternsf = patterns.filter((p) => design.indexOf(p) == 0);
 	var count = 0;
 	for (var pattern of patternsf) {
-		// console.log(count++, " ".repeat(depth), design, pattern, patternsf);
 		const key = `${design}|${pattern}`;
 		if (CACHE[key] === undefined) {
 			CACHE[key] = Validate(
@@ -28,11 +28,12 @@ function Validate(design, patterns, depth = 0) {
 			);
 		}
 		if (CACHE[key]) {
-			console.log("valid");
-			return 1;
+			// console.log(" ".repeat(depth), "valid", design, key);
+			total += CACHE[key];
 		}
+		// CACHE = {};
 	}
-	return 0;
+	return total;
 }
 
 // 236 low
@@ -48,13 +49,10 @@ function Go(contents) {
 	lines.shift();
 	var possible = 0;
 	for (var design of lines) {
-		// console.log("\n DESSIGN:", design);
-		if (Validate(design, patterns)) {
-			// console.log("  VALID", design, possible);
-			possible++;
-		} else {
-			console.warn("invalid", design, possible);
-		}
+		console.log("\n DESSIGN:", design);
+		var vals = Validate(design, patterns);
+		if (vals > 0) console.log("  VALID", design, vals);
+		possible += vals;
 	}
 	console.log(">>", possible);
 }
