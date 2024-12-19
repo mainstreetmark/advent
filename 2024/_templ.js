@@ -10,6 +10,6 @@ fs.readFile(datafile, "utf8", (err, contents) => {
 });
 
 function Go(contents) {
-	const lines = contents.split("\n");
-	///here
+	const lines = contents.trim().split("\n");
+	console.log(lines);
 }
