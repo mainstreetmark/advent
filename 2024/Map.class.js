@@ -4,6 +4,9 @@ import { fileURLToPath } from "url";
 
 import { Grid, Astar } from "fast-astar";
 
+const _PATHCACHE = {};
+const MAXCACHE = 10000;
+
 export default class Map {
 	width;
 	height;
@@ -67,6 +70,13 @@ export default class Map {
 
 		console.log(this.data.map((row) => row.join("")).join("\n"));
 		console.log(" ");
+	}
+	// Draw a temporary marker at a specific location and print it.
+	show([r, c], marker = "@") {
+		var old = this.get([r, c]);
+		this.set([r, c], marker);
+		this.print(`${old} -> ${marker}`);
+		this.set([r, c], old);
 	}
 
 	reset() {
@@ -164,6 +174,14 @@ export default class Map {
 	// A* pathfinding implementation
 	//   https://www.npmjs.com/package/fast-astar
 	Path(from, to, obstacles = ["#"]) {
+		var out = false;
+		var key = `[${obstacles.join(",")}]${from.join(",")}->${to.join(",")}`;
+		// console.log("key", key);
+		if (_PATHCACHE[key]) {
+			// console.log("cache hit", key);
+			return JSON.parse(_PATHCACHE[key]);
+		}
+
 		let grid = new Grid({
 			col: this.height, // col
 			row: this.width, // row
@@ -181,7 +199,15 @@ export default class Map {
 
 		var astar = new Astar(grid);
 		var path = astar.search(from, to, { rightAngle: true });
-		if (path) return path.slice(1);
-		else return false;
+		if (path) out = path.slice(1);
+		if (Object.keys(_PATHCACHE).length > MAXCACHE) {
+			delete _PATHCACHE[Object.keys(_PATHCACHE)[0]];
+		}
+		_PATHCACHE[key] = JSON.stringify(out);
+		return out;
+	}
+
+	printcache() {
+		console.log(Object.keys(_PATHCACHE).length);
 	}
 }

@@ -3,7 +3,7 @@
 import Map from "../Map.class.js";
 import { bar } from "../functions.js";
 
-const MAP = new Map("d20/d20.txt");
+const MAP = new Map("d20/d20t.txt");
 
 // MAP.print("Original");
 var start = MAP.find("S");
@@ -26,7 +26,7 @@ for (var s2 of path) {
 			MAP.set(cut, ".");
 			var cheat_time =
 				original_time - MAP.Path(start, end, ["#", "!"]).length;
-			if (cheat_time >= 100) {
+			if (cheat_time >= 1) {
 				if (!cheats[cheat_time]) {
 					cheats[cheat_time] = 0;
 				}
