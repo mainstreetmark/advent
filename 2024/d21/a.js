@@ -64,27 +64,26 @@ function Move(pad, code, start, row_first = false) {
 		var target = [row(pad, c), col(pad, c)];
 		var dr = target[0] - current[0];
 		var dc = target[1] - current[1];
-		if (row_first) {
-			for (var r = 0; r < Math.abs(dr); r++) {
-				seq += dr > 0 ? "v" : "^";
-			}
-			for (var c = 0; c < Math.abs(dc); c++) {
-				seq += dc > 0 ? ">" : "<";
-			}
-		} else {
-			for (var c = 0; c < Math.abs(dc); c++) {
-				seq += dc > 0 ? ">" : "<";
-			}
-			for (var r = 0; r < Math.abs(dr); r++) {
-				seq += dr > 0 ? "v" : "^";
-			}
-		}
-
+		if (dr < 0) seq += "^".repeat(Math.abs(dr));
+		if (dr > 0) seq += "v".repeat(Math.abs(dr));
+		if (dc > 0) seq += ">".repeat(Math.abs(dc));
+		if (dc < 0) seq += "<".repeat(Math.abs(dc));
 		seq += "A";
 		current = target;
 	}
 	return seq;
 }
+// 	for (var c = 0; c < Math.abs(dc); c++) {
+// 		seq += dc > 0 ? ">" : "<";
+// 	}
+// } else {
+// 	for (var c = 0; c < Math.abs(dc); c++) {
+// 		seq += dc > 0 ? ">" : "<";
+// 	}
+// 	for (var r = 0; r < Math.abs(dr); r++) {
+// 		seq += dr > 0 ? "v" : "^";
+// 	}
+// }
 
 function Go(contents) {
 	var sum = 0;
@@ -92,8 +91,11 @@ function Go(contents) {
 	// console.log(lines);
 	for (var line of lines) {
 		var seq1 = Move(KEYPAD, line, "A");
+		console.log(seq1.length, seq1);
 		var seq2 = Move(CTRL, seq1, "A");
+		console.log(seq2.length, seq2);
 		var seq3 = Move(CTRL, seq2, "A");
+		console.log(seq3.length, seq3);
 		// console.log([line, seq1, seq2, seq3].reverse().join("\n"));
 		// console.log(line == Unmove(KEYPAD, seq1, "A"));
 		// console.log(seq1 == Unmove(CTRL, seq2, "A"));
